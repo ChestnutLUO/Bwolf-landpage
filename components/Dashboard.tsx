@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
           {payload[1] && (
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-white"></div>
-              <p className="text-white">人气: {payload[1].value}</p>
+              <p className="text-white">峰值: {payload[1].value}</p>
             </div>
           )}
         </div>
@@ -134,8 +134,12 @@ const Dashboard: React.FC = () => {
             <p className="font-mono text-gray-500">狼小妹 // 直播数据分析</p>
           </div>
           <div className="font-mono text-right mt-4 md:mt-0">
-            <div className={`${isLive ? "text-green-500" : "text-gray-500"} flex items-center justify-end gap-2`}>
-              <div className={`w-2 h-2 ${isLive ? "bg-green-500 animate-pulse" : "bg-gray-500"} rounded-full`}></div>
+            <div
+              className={`${isLive ? "text-green-500" : "text-gray-500"} flex items-center justify-end gap-2`}
+            >
+              <div
+                className={`w-2 h-2 ${isLive ? "bg-green-500 animate-pulse" : "bg-gray-500"} rounded-full`}
+              ></div>
               {isLive ? "直播中" : "未开播"}
             </div>
             <div className="text-xs text-gray-600">数据源: BILIBILI</div>
@@ -173,7 +177,7 @@ const Dashboard: React.FC = () => {
 
               <div className="font-mono text-sm text-gray-400 mb-4">
                 {metric.viewers.toLocaleString()}{" "}
-                <span className="text-[10px]">观众</span>
+                <span className="text-[10px]">{metric.id === 'FAN-01' ? '粉丝' : '观众'}</span>
               </div>
 
               {/* Mini visual bar */}
@@ -200,7 +204,7 @@ const Dashboard: React.FC = () => {
             <div className="flex justify-between items-center mb-8">
               <h3 className="font-bold text-xl flex items-center gap-2">
                 <span className="w-2 h-4 bg-yellow-500 block"></span>
-                互动量
+                在线人数
               </h3>
               <div className="flex gap-2 font-mono text-xs">
                 <span className="px-2 py-1 bg-yellow-500 text-black font-bold cursor-pointer">
@@ -283,7 +287,9 @@ const Dashboard: React.FC = () => {
                 <div className="flex justify-between font-mono text-sm mb-1">
                   <span className="text-gray-400">弹幕总数</span>
                   <span className="text-yellow-500">
-                    {danmakuChart.reduce((s, d) => s + d.value, 0).toLocaleString()}
+                    {danmakuChart
+                      .reduce((s, d) => s + d.value, 0)
+                      .toLocaleString()}
                   </span>
                 </div>
                 <div className="w-full h-1 bg-gray-800 overflow-hidden">
@@ -294,7 +300,9 @@ const Dashboard: React.FC = () => {
                 <div className="flex justify-between font-mono text-sm mb-1">
                   <span className="text-gray-400">独立用户</span>
                   <span>
-                    {danmakuChart.reduce((s, d) => s + (d.value2 ?? 0), 0).toLocaleString()}
+                    {danmakuChart
+                      .reduce((s, d) => s + (d.value2 ?? 0), 0)
+                      .toLocaleString()}
                   </span>
                 </div>
                 <div className="w-full h-1 bg-gray-800">
@@ -305,7 +313,7 @@ const Dashboard: React.FC = () => {
 
             <div className="mt-6 pt-4 border-t border-gray-800">
               <a
-                href="#"
+                href="https://grafana.bwolf.work"
                 className="flex items-center justify-between text-xs font-mono text-gray-500 hover:text-white transition-colors group/link"
               >
                 <span>查看完整报告</span>

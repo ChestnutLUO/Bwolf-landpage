@@ -134,7 +134,7 @@ const HeroSection: React.FC = () => {
                     ref={(el) => {
                       textRefs.current[index] = el;
                     }}
-                    className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
+                    className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[1.1] md:leading-[0.9] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
                   >
                     {line}
                   </h1>

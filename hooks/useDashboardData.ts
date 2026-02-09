@@ -60,7 +60,7 @@ function toMetrics(data: DashboardData): StreamMetric[] {
       viewers: data.followers,
       status: "LIVE",
       category: `粉丝团 ${data.medals}`,
-      uptime: `${data.followers.toLocaleString()} 关注`,
+      uptime: `${data.followers.toLocaleString()} 粉丝`,
       bitrate: 0,
       fps: 0,
     },
