@@ -119,22 +119,9 @@ const HeroSection: React.FC = () => {
         }}
       ></div>
 
-      {/* Point Cloud Background Effect */}
-      <div className="absolute inset-0 z-5 flex items-center justify-center opacity-20 pointer-events-none">
-        <PointCloud
-          svgPath="/lxm.svg"
-          width={800}
-          height={625}
-          pointSize={1.5}
-          pointColor="#faecde"
-          density={40}
-          animationDuration={3}
-        />
-      </div>
-
       <div className="relative z-10 max-w-7xl w-full mx-auto">
-        {/* Main Content Area: Flex row to keep Text and Scroll close */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-end lg:gap-16">
+        {/* Main Content Area: Left text + Right point cloud */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8">
           {/* Left: Big Text Block */}
           <div className="flex-shrink-0 z-20">
             <div className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub">
@@ -154,23 +141,38 @@ const HeroSection: React.FC = () => {
                 </div>
               ))}
             </div>
+            {/* Scrolling Text below hero text on mobile */}
+            <div className="lg:hidden mt-6 hero-sub">
+              <ScrollingText />
+            </div>
           </div>
 
-          {/* Right: Scrolling Text */}
-          <div className="hidden lg:block pb-2 hero-sub">
-            <ScrollingText />
-          </div>
-        </div>
-
-        {/* System Evolution Text - Above divider line */}
-        <div className="mt-12 mb-4 hero-sub">
-          <div className="font-mono text-[10px] text-gray-500 tracking-[0.2em] uppercase">
-            System_Evolution //
+          {/* Right: Point Cloud with Scrolling Text overlay */}
+          <div
+            ref={rightColRef}
+            className="hidden lg:flex flex-col items-end flex-shrink-0 hero-sub"
+          >
+            <div className="relative">
+              <div className="opacity-15 pointer-events-none">
+                <PointCloud
+                  svgPath="/lxm.svg"
+                  width={500}
+                  height={400}
+                  pointSize={1.2}
+                  pointColor="#faecde"
+                  density={25}
+                  animationDuration={3}
+                />
+              </div>
+              <div className="absolute bottom-4 left-0 right-0">
+                <ScrollingText />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Bottom Elements - Full Width */}
-        <div className="w-full max-w-7xl">
+        <div className="w-full max-w-7xl mt-10">
           <div className="hero-decor w-full h-[1px] bg-white/20 origin-left"></div>
 
           <div className="mt-8 flex flex-col lg:flex-row lg:items-center justify-between gap-12">

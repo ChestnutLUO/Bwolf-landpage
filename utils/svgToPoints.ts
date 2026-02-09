@@ -48,6 +48,17 @@ export function svgToPoints(svgString: string, density: number = 100): Point[][]
   const allPoints: Point[][] = [];
 
   paths.forEach((path) => {
+    // Skip paths inside clipPath, defs, or mask elements
+    if (path.closest('clipPath') || path.closest('defs') || path.closest('mask')) {
+      return;
+    }
+
+    // Skip paths with fill:none (invisible paths)
+    const style = path.getAttribute('style') || '';
+    if (style.includes('fill:none')) {
+      return;
+    }
+
     const pathData = path.getAttribute('d');
     if (pathData) {
       const points = pathToPoints(pathData, density);
