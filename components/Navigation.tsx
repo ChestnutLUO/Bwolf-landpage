@@ -93,7 +93,7 @@ const Navigation: React.FC = () => {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white bg-black/30 backdrop-blur-sm"
+        className="fixed top-0 left-0 w-full z-[100] px-6 py-6 flex justify-between items-center text-white bg-black/30 backdrop-blur-sm"
       >
         {/* Logo */}
         <div className="flex items-center gap-2 group cursor-pointer">
@@ -134,7 +134,7 @@ const Navigation: React.FC = () => {
 
         {/* Mobile Menu Icon */}
         <div
-          className="md:hidden font-mono text-xs cursor-pointer hover:text-yellow-500 transition-colors z-50 relative"
+          className="md:hidden font-mono text-xs cursor-pointer hover:text-yellow-500 transition-colors z-[101] relative"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? (
@@ -150,7 +150,7 @@ const Navigation: React.FC = () => {
       {/* Mobile Menu Overlay */}
       <div
         ref={menuRef}
-        className="fixed inset-0 bg-[#050505] z-40 flex flex-col justify-center items-center md:hidden translate-x-full"
+        className="fixed inset-0 bg-[#050505] z-[90] flex flex-col justify-center items-center md:hidden translate-x-full"
       >
         <div className="flex flex-col gap-8 text-center">
           {links.map((link, i) => (

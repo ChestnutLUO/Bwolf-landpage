@@ -126,12 +126,15 @@ const HeroSection: React.FC = () => {
         }}
       ></div>
 
-      <div className="relative z-10 max-w-7xl w-full mx-auto">
+      <div className="relative z-10 max-w-7xl w-full mx-auto isolate">
         {/* Main Content Area: Left text + Right point cloud */}
         <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8">
           {/* Left: Big Text Block */}
           <div className="flex-shrink-0 z-20">
-            <div className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub">
+            <div 
+              className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub transform-gpu antialiased"
+              style={{ backfaceVisibility: 'hidden', WebkitFontSmoothing: 'antialiased' }}
+            >
               // BWOLF.WORK 数据分析平台
             </div>
             <div className="flex flex-col">
@@ -142,6 +145,7 @@ const HeroSection: React.FC = () => {
                       textRefs.current[index] = el;
                     }}
                     className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[1.1] md:leading-[0.9] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
+                    style={{ backfaceVisibility: 'hidden', WebkitFontSmoothing: 'antialiased' }}
                   >
                     {line}
                   </h1>
