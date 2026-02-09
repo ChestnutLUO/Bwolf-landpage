@@ -107,12 +107,6 @@ const Dashboard: React.FC = () => {
             <div className="w-2 h-2 bg-yellow-500"></div>
             <p className="text-white">在线: {payload[0].value}</p>
           </div>
-          {payload[1] && (
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-white"></div>
-              <p className="text-white">峰值: {payload[1].value}</p>
-            </div>
-          )}
         </div>
       );
     }
@@ -251,15 +245,6 @@ const Dashboard: React.FC = () => {
                     fillOpacity={1}
                     fill="url(#colorVal)"
                     strokeWidth={2}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="value2"
-                    stroke="#666"
-                    fillOpacity={1}
-                    fill="url(#colorVal2)"
-                    strokeWidth={1}
-                    strokeDasharray="5 5"
                   />
                 </AreaChart>
               </ResponsiveContainer>

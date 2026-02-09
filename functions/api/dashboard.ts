@@ -69,8 +69,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
           )
           SELECT
             to_char(MIN(recorded_at) AT TIME ZONE 'Asia/Shanghai', 'HH24:MI') AS time,
-            ROUND(AVG(online_count))::int AS value,
-            ROUND(AVG(viewer_count))::int AS value2
+            ROUND(AVG(online_count))::int AS value
           FROM numbered
           GROUP BY bucket
           ORDER BY bucket
@@ -138,7 +137,6 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       viewer_chart: viewerResult.map((r: any) => ({
         time: r.time,
         value: r.value ?? 0,
-        value2: r.value2 ?? 0,
       })),
       danmaku_chart: danmakuResult.map((r: any) => ({
         time: r.time,
