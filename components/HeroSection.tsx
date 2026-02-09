@@ -153,14 +153,14 @@ const HeroSection: React.FC = () => {
             className="hidden lg:flex flex-col items-end flex-shrink-0 hero-sub"
           >
             <div className="relative">
-              <div className="opacity-15 pointer-events-none">
+              <div>
                 <PointCloud
                   svgPath="/lxm.svg"
                   width={500}
                   height={400}
                   pointSize={1.2}
                   pointColor="#faecde"
-                  density={25}
+                  density={4}
                   animationDuration={3}
                 />
               </div>

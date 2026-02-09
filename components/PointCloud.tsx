@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { svgToPoints, normalizePoints } from '../utils/svgToPoints';
+import { svgToColoredPoints, normalizeColoredPoints } from '../utils/svgToPoints';
 
 interface PointCloudProps {
   svgPath: string;
@@ -11,6 +10,8 @@ interface PointCloudProps {
   density?: number;
   animationDuration?: number;
   className?: string;
+  mouseRadius?: number;
+  mouseForce?: number;
 }
 
 interface Particle {
@@ -18,7 +19,15 @@ interface Particle {
   y: number;
   targetX: number;
   targetY: number;
+  originX: number;
+  originY: number;
+  vx: number;
+  vy: number;
+  color: string;
 }
+
+const RETURN_SPEED = 0.05;
+const FRICTION = 0.85;
 
 const PointCloud: React.FC<PointCloudProps> = ({
   svgPath,
@@ -29,98 +38,138 @@ const PointCloud: React.FC<PointCloudProps> = ({
   density = 50,
   animationDuration = 2,
   className = '',
+  mouseRadius = 100,
+  mouseForce = 6,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
+  const entryRef = useRef(0);
 
   useEffect(() => {
-    const loadAndConvert = async () => {
+    const load = async () => {
       try {
         let svgString: string;
-
         if (svgPath.startsWith('<svg')) {
           svgString = svgPath;
         } else {
-          const response = await fetch(svgPath);
-          svgString = await response.text();
+          const res = await fetch(svgPath);
+          svgString = await res.text();
         }
 
-        console.log('SVG loaded, converting to points...');
-        const pathPoints = svgToPoints(svgString, density);
-        console.log(`Found ${pathPoints.length} paths`);
+        const raw = svgToColoredPoints(svgString, density);
+        const pts = normalizeColoredPoints(raw, width, height);
 
-        // Flatten all points first
-        const allPoints: { x: number; y: number }[] = [];
-        pathPoints.forEach((points) => {
-          allPoints.push(...points);
+        particlesRef.current = pts.map((p) => {
+          const rx = Math.random() * width;
+          const ry = Math.random() * height;
+          return {
+            x: rx, y: ry,
+            targetX: p.x, targetY: p.y,
+            originX: rx, originY: ry,
+            vx: 0, vy: 0,
+            color: p.color,
+          };
         });
 
-        console.log(`Total points before normalization: ${allPoints.length}`);
-
-        // Normalize all points together to maintain spatial relationships
-        const normalizedPoints = normalizePoints(allPoints, width, height);
-        console.log(`Total points after normalization: ${normalizedPoints.length}`);
-
-        // Initialize particles
-        particlesRef.current = normalizedPoints.map((point) => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          targetX: point.x,
-          targetY: point.y,
-        }));
-
-        setIsLoaded(true);
-
-        // Animate each particle individually
-        particlesRef.current.forEach((particle, index) => {
-          gsap.to(particle, {
-            x: particle.targetX,
-            y: particle.targetY,
-            duration: animationDuration,
-            ease: 'power2.out',
-            delay: index * 0.0005,
-          });
-        });
-
-        // Start render loop
-        startAnimation();
-      } catch (error) {
-        console.error('Failed to load SVG:', error);
+        // Drive entry animation via rAF
+        const start = performance.now();
+        const dur = animationDuration * 1000;
+        const tick = (now: number) => {
+          const t = Math.min((now - start) / dur, 1);
+          entryRef.current = 1 - Math.pow(1 - t, 3);
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        render();
+      } catch (e) {
+        console.error('PointCloud: failed to load SVG', e);
       }
     };
 
-    loadAndConvert();
-
+    load();
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [svgPath, width, height, density, animationDuration]);
 
-  const startAnimation = () => {
-    const animate = () => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseRef.current.x = e.clientX - rect.left;
+    mouseRef.current.y = e.clientY - rect.top;
+  };
+
+  const handleMouseLeave = () => {
+    mouseRef.current = { x: -9999, y: -9999 };
+  };
+
+  const render = () => {
+    const loop = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = pointColor;
 
-      particlesRef.current.forEach((particle) => {
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+      const progress = entryRef.current;
+      const r2 = mouseRadius * mouseRadius;
+
+      particlesRef.current.forEach((p) => {
+        if (progress < 1) {
+          // Entry: lerp from random origin to target
+          p.x = p.originX + (p.targetX - p.originX) * progress;
+          p.y = p.originY + (p.targetY - p.originY) * progress;
+        } else {
+          // Physics: mouse repulsion + spring return
+          const dx = p.x - mx;
+          const dy = p.y - my;
+          const d2 = dx * dx + dy * dy;
+
+          if (d2 < r2 && d2 > 0) {
+            const dist = Math.sqrt(d2);
+            const force = ((mouseRadius - dist) / mouseRadius) * mouseForce;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          }
+
+          p.vx += (p.targetX - p.x) * RETURN_SPEED;
+          p.vy += (p.targetY - p.y) * RETURN_SPEED;
+          p.vx *= FRICTION;
+          p.vy *= FRICTION;
+          p.x += p.vx;
+          p.y += p.vy;
+        }
+
+        // Color & opacity: near mouse → original color + full opacity, far → default + low opacity
+        const dxm = p.x - mx;
+        const dym = p.y - my;
+        const distToMouse = Math.sqrt(dxm * dxm + dym * dym);
+        const colorRadius = mouseRadius * 2;
+
+        if (distToMouse < colorRadius) {
+          const blend = 1 - distToMouse / colorRadius;
+          ctx.globalAlpha = 0.3 + blend * 0.7; // 0.3 → 1.0
+          ctx.fillStyle = p.color;
+        } else {
+          ctx.globalAlpha = 0.3;
+          ctx.fillStyle = pointColor;
+        }
+
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, pointSize, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, pointSize, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      ctx.globalAlpha = 1;
+      animationFrameRef.current = requestAnimationFrame(loop);
     };
 
-    animate();
+    loop();
   };
 
   return (
@@ -129,6 +178,8 @@ const PointCloud: React.FC<PointCloudProps> = ({
       width={width}
       height={height}
       className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     />
   );
 };
