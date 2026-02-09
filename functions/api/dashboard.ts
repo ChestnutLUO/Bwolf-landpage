@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 import postgres from "postgres";
 
 const ROOM_ID = 8432038;

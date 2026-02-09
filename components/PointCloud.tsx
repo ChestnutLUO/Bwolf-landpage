@@ -48,6 +48,7 @@ const PointCloud: React.FC<PointCloudProps> = ({
   const entryRef = useRef(0);
 
   useEffect(() => {
+    let isMounted = true;
     const load = async () => {
       try {
         let svgString: string;
@@ -57,6 +58,8 @@ const PointCloud: React.FC<PointCloudProps> = ({
           const res = await fetch(svgPath);
           svgString = await res.text();
         }
+
+        if (!isMounted) return;
 
         const raw = svgToColoredPoints(svgString, density);
         const pts = normalizeColoredPoints(raw, width, height);
@@ -77,6 +80,7 @@ const PointCloud: React.FC<PointCloudProps> = ({
         const start = performance.now();
         const dur = animationDuration * 1000;
         const tick = (now: number) => {
+          if (!isMounted) return;
           const t = Math.min((now - start) / dur, 1);
           entryRef.current = 1 - Math.pow(1 - t, 3);
           if (t < 1) requestAnimationFrame(tick);
@@ -90,6 +94,7 @@ const PointCloud: React.FC<PointCloudProps> = ({
 
     load();
     return () => {
+      isMounted = false;
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [svgPath, width, height, density, animationDuration]);
