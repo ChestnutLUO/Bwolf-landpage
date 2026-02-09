@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, BarChart3, Cloud, Globe, Zap } from 'lucide-react';
-import { HERO_TEXT } from '../constants';
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight, BarChart3, Cloud, Globe, Zap } from "lucide-react";
+import { HERO_TEXT } from "../constants";
+import ScrollingText from "./ScrollingText";
+import PointCloud from "./PointCloud";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,11 +26,11 @@ const HeroSection: React.FC = () => {
           trigger: containerRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: true
-        }
+          scrub: true,
+        },
       });
 
-      // Parallax Effect for Right Column content (move faster than scroll)
+      // Parallax Effect for Right Column content
       gsap.to(rightColRef.current, {
         yPercent: -15,
         ease: "none",
@@ -36,35 +38,37 @@ const HeroSection: React.FC = () => {
           trigger: containerRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: 1
-        }
+          scrub: 1,
+        },
       });
 
       // Staggered Text Reveal
-      tl.fromTo(textRefs.current, 
+      tl.fromTo(
+        textRefs.current,
         { y: 100, opacity: 0, rotateX: 20 },
-        { 
-          y: 0, 
-          opacity: 1, 
+        {
+          y: 0,
+          opacity: 1,
           rotateX: 0,
-          stagger: 0.15, 
-          duration: 1.2, 
+          stagger: 0.15,
+          duration: 1.2,
           ease: "power3.out",
-          delay: 0.2
-        }
+          delay: 0.2,
+        },
       );
 
-      // Decorative elements reveal
-      tl.fromTo('.hero-decor', 
+      tl.fromTo(
+        ".hero-decor",
         { scaleX: 0, opacity: 0 },
         { scaleX: 1, opacity: 1, duration: 1, ease: "expo.out" },
-        "-=0.5"
+        "-=0.5",
       );
 
-      tl.fromTo('.hero-sub',
+      tl.fromTo(
+        ".hero-sub",
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8 },
-        "-=0.8"
+        "-=0.8",
       );
     }, containerRef);
 
@@ -72,100 +76,142 @@ const HeroSection: React.FC = () => {
   }, []);
 
   // Micro-interaction: Button Hover
-  const handleBtnEnter = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    gsap.to(e.currentTarget, { scale: 1.05, duration: 0.3, ease: "back.out(1.7)" });
-    gsap.to(e.currentTarget.querySelector('.icon-arrow'), { x: 5, y: -5, duration: 0.3 });
+  const handleBtnEnter = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => {
+    gsap.to(e.currentTarget, {
+      scale: 1.05,
+      duration: 0.3,
+      ease: "back.out(1.7)",
+    });
+    gsap.to(e.currentTarget.querySelector(".icon-arrow"), {
+      x: 5,
+      y: -5,
+      duration: 0.3,
+    });
   };
 
-  const handleBtnLeave = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const handleBtnLeave = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => {
     gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" });
-    gsap.to(e.currentTarget.querySelector('.icon-arrow'), { x: 0, y: 0, duration: 0.3 });
+    gsap.to(e.currentTarget.querySelector(".icon-arrow"), {
+      x: 0,
+      y: 0,
+      duration: 0.3,
+    });
   };
 
   return (
-    <section ref={containerRef} className="relative min-h-screen w-full flex flex-col justify-center px-4 md:px-12 pt-20 overflow-hidden">
-      
-      {/* Background Grid - Parallax Layer */}
-      <div 
+    <section
+      ref={containerRef}
+      className="relative min-h-screen w-full flex flex-col justify-center px-4 md:px-12 pt-20 overflow-hidden"
+    >
+      {/* Background Grid */}
+      <div
         ref={bgGridRef}
-        className="absolute inset-0 z-0 opacity-10 pointer-events-none -top-[20%]" 
-        style={{ 
-          height: '140%', // Taller than container for parallax
-          backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', 
-          backgroundSize: '40px 40px' 
-        }}>
+        className="absolute inset-0 z-0 opacity-10 pointer-events-none -top-[20%]"
+        style={{
+          height: "140%",
+          backgroundImage:
+            "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      ></div>
+
+      {/* Point Cloud Background Effect */}
+      <div className="absolute inset-0 z-5 flex items-center justify-center opacity-20 pointer-events-none">
+        <PointCloud
+          svgPath="/lxm.svg"
+          width={800}
+          height={625}
+          pointSize={1.5}
+          pointColor="#faecde"
+          density={40}
+          animationDuration={3}
+        />
       </div>
 
-      <div className="relative z-10 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Left Column: Big Text */}
-        <div className="lg:col-span-12 flex flex-col justify-center">
-          <div className="mb-4 font-mono text-yellow-500 tracking-widest text-xs hero-sub">
-            // BWOLF.WORK 数据分析平台
-          </div>
-          {HERO_TEXT.map((line, index) => (
-            <div key={index} className="overflow-hidden">
-              <h1
-                ref={(el) => { textRefs.current[index] = el; }}
-                className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
-              >
-                {line}
-              </h1>
+      <div className="relative z-10 max-w-7xl w-full mx-auto">
+        {/* Main Content Area: Flex row to keep Text and Scroll close */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-end lg:gap-16">
+          {/* Left: Big Text Block */}
+          <div className="flex-shrink-0 z-20">
+            <div className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub">
+              // BWOLF.WORK 数据分析平台
             </div>
-          ))}
-          
-          <div className="hero-decor w-full h-[1px] bg-white mt-8 mb-6 origin-left"></div>
-
-          <div className="hero-sub flex flex-col md:flex-row gap-8 font-mono text-sm text-gray-400">
-             <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-yellow-500" />
-                <span>狼姐节点: 在线</span>
-             </div>
-             <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span>实时监控: 已启用</span>
-             </div>
+            <div className="flex flex-col">
+              {HERO_TEXT.map((line, index) => (
+                <div key={index} className="overflow-hidden">
+                  <h1
+                    ref={(el) => {
+                      textRefs.current[index] = el;
+                    }}
+                    className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
+                  >
+                    {line}
+                  </h1>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row gap-6 hero-sub opacity-0">
-            <a
-              href="https://bwolf.work"
-              className="group relative px-8 py-4 bg-white text-black font-mono font-bold text-sm tracking-wider overflow-hidden flex items-center gap-4 hover:bg-yellow-500 transition-colors"
-              onMouseEnter={handleBtnEnter}
-              onMouseLeave={handleBtnLeave}
-            >
-              <div className="relative z-10 flex items-center gap-2">
-                <BarChart3 size={18} />
-                <span>监控面板</span>
-                <ArrowUpRight className="icon-arrow" size={18} />
-              </div>
-            </a>
-
-            <a
-              href="https://wordcloud.bwolf.work/"
-              className="group relative px-8 py-4 border border-white/30 text-white font-mono font-bold text-sm tracking-wider overflow-hidden flex items-center gap-4 hover:border-yellow-500 hover:text-yellow-500 transition-colors"
-              onMouseEnter={handleBtnEnter}
-              onMouseLeave={handleBtnLeave}
-            >
-              <div className="relative z-10 flex items-center gap-2">
-                <Cloud size={18} />
-                <span>弹幕词云</span>
-                <ArrowUpRight className="icon-arrow" size={18} />
-              </div>
-            </a>
+          {/* Right: Scrolling Text */}
+          <div className="hidden lg:block pb-2 hero-sub">
+            <ScrollingText />
           </div>
         </div>
 
+        {/* System Evolution Text - Above divider line */}
+        <div className="mt-12 mb-4 hero-sub">
+          <div className="font-mono text-[10px] text-gray-500 tracking-[0.2em] uppercase">
+            System_Evolution //
+          </div>
+        </div>
+
+        {/* Bottom Elements - Full Width */}
+        <div className="w-full max-w-7xl">
+          <div className="hero-decor w-full h-[1px] bg-white/20 origin-left"></div>
+
+          <div className="mt-8 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+            <div className="hero-sub flex flex-col md:flex-row gap-8 font-mono text-sm text-gray-400">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-yellow-500" />
+                <span>面板节点: 在线</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-yellow-500" />
+                <span>实时监控: 已启用</span>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 hero-sub">
+              <a
+                href="https://bwolf.work"
+                className="group relative px-6 py-3 bg-white text-black font-mono font-bold text-xs tracking-wider overflow-hidden flex items-center gap-3 hover:bg-yellow-500 transition-colors"
+                onMouseEnter={handleBtnEnter}
+                onMouseLeave={handleBtnLeave}
+              >
+                <BarChart3 size={16} />
+                <span>监控面板</span>
+                <ArrowUpRight className="icon-arrow" size={16} />
+              </a>
+
+              <a
+                href="https://wordcloud.bwolf.work/"
+                className="group relative px-6 py-3 border border-white/20 text-white font-mono font-bold text-xs tracking-wider overflow-hidden flex items-center gap-3 hover:border-yellow-500 hover:text-yellow-500 transition-colors"
+                onMouseEnter={handleBtnEnter}
+                onMouseLeave={handleBtnLeave}
+              >
+                <Cloud size={16} />
+                <span>弹幕词云</span>
+                <ArrowUpRight className="icon-arrow" size={16} />
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <style>{`
-        @keyframes scan {
-          0% { top: 0%; opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
-        }
-      `}</style>
     </section>
   );
 };
