@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight, BarChart3, Cloud, Globe, Zap } from "lucide-react";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Cloud,
+  Globe,
+  Zap,
+  LayoutDashboard,
+} from "lucide-react";
 import { HERO_TEXT } from "../constants";
 import ScrollingText from "./ScrollingText";
 import PointCloud from "./PointCloud";
@@ -188,15 +195,26 @@ const HeroSection: React.FC = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 hero-sub">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 hero-sub">
               <a
-                href="https://grafana.bwolf.work"
+                href="https://grafana.bwolf.work?kiosk"
                 className="group relative px-6 py-3 bg-white text-black font-mono font-bold text-xs tracking-wider overflow-hidden flex items-center gap-3 hover:bg-yellow-500 transition-colors"
                 onMouseEnter={handleBtnEnter}
                 onMouseLeave={handleBtnLeave}
               >
                 <BarChart3 size={16} />
                 <span>监控面板</span>
+                <ArrowUpRight className="icon-arrow" size={16} />
+              </a>
+
+              <a
+                href="https://grafana.bwolf.work/d/bwolf-overview?kiosk"
+                className="group relative px-6 py-3 border border-white/20 text-white font-mono font-bold text-xs tracking-wider overflow-hidden flex items-center gap-3 hover:border-yellow-500 hover:text-yellow-500 transition-colors"
+                onMouseEnter={handleBtnEnter}
+                onMouseLeave={handleBtnLeave}
+              >
+                <LayoutDashboard size={16} />
+                <span>整体监控</span>
                 <ArrowUpRight className="icon-arrow" size={16} />
               </a>
 

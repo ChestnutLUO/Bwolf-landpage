@@ -313,7 +313,7 @@ const Dashboard: React.FC = () => {
 
             <div className="mt-6 pt-4 border-t border-gray-800">
               <a
-                href="https://grafana.bwolf.work"
+                href="https://grafana.bwolf.work?kiosk"
                 className="flex items-center justify-between text-xs font-mono text-gray-500 hover:text-white transition-colors group/link"
               >
                 <span>查看完整报告</span>

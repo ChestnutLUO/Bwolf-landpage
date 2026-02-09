@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
   }, [isMenuOpen]);
 
   const links = [
-    { name: "监控面板", href: "https://grafana.bwolf.work" },
+    { name: "监控面板", href: "https://grafana.bwolf.work?kiosk" },
     { name: "弹幕词云", href: "https://wordcloud.bwolf.work/" },
     { name: "直播间", href: "https://live.bilibili.com/8432038" },
   ];
