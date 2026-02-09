@@ -1,71 +1,64 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 const Navigation: React.FC = () => {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    console.log('Navigation mounted');
-    console.log('navRef.current:', navRef.current);
+    // 使用 gsap.context 进行上下文管理
+    // 确保在组件卸载/重新挂载时（Strict Mode），动画状态被正确重置
+    const ctx = gsap.context(() => {
+      gsap.from(navRef.current, {
+        y: -50,
+        opacity: 0,
+        duration: 1,
+        delay: 0.5,
+        ease: "power3.out",
+      });
+    }, navRef); // Scope 设置为 navRef
 
-    // 暂时禁用动画进行调试
-    // if (navRef.current) {
-    //   gsap.fromTo(navRef.current,
-    //     {
-    //       y: -50,
-    //       opacity: 0
-    //     },
-    //     {
-    //       y: 0,
-    //       opacity: 1,
-    //       duration: 1,
-    //       delay: 0.5,
-    //       ease: "power3.out"
-    //     }
-    //   );
-    // }
+    // 清理函数：在组件卸载时还原所有 GSAP 更改，防止样式残留
+    return () => ctx.revert();
   }, []);
 
   const links = [
-    { name: '监控面板', href: 'https://bwolf.work' },
-    { name: '弹幕词云', href: 'https://wordcloud.bwolf.work/' },
-    { name: '直播间', href: 'https://live.bilibili.com/8432038' },
-    { name: '关于', href: 'https://github.com/digbywolf' }
+    { name: "监控面板", href: "https://grafana.bwolf.work" },
+    { name: "弹幕词云", href: "https://wordcloud.bwolf.work/" },
+    { name: "直播间", href: "https://live.bilibili.com/8432038" },
   ];
 
   const handleLinkEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Underline animation
-    gsap.to(e.currentTarget.querySelector('.nav-line'), {
-      width: '100%',
+    gsap.to(e.currentTarget.querySelector(".nav-line"), {
+      width: "100%",
       duration: 0.4,
-      ease: "expo.out"
+      ease: "expo.out",
     });
     // Text glitch shift
-    gsap.to(e.currentTarget.querySelector('.nav-text'), {
+    gsap.to(e.currentTarget.querySelector(".nav-text"), {
       x: 2,
-      color: '#EAB308',
-      duration: 0.2
+      color: "#EAB308",
+      duration: 0.2,
     });
   };
 
   const handleLinkLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    gsap.to(e.currentTarget.querySelector('.nav-line'), {
-      width: '0%',
+    gsap.to(e.currentTarget.querySelector(".nav-line"), {
+      width: "0%",
       duration: 0.4,
-      ease: "expo.out"
+      ease: "expo.out",
     });
-    gsap.to(e.currentTarget.querySelector('.nav-text'), {
+    gsap.to(e.currentTarget.querySelector(".nav-text"), {
       x: 0,
-      color: 'white',
-      duration: 0.2
+      color: "white",
+      duration: 0.2,
     });
   };
 
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center text-white bg-black/30 backdrop-blur-sm"
-      style={{ opacity: 1 }}
+      className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white bg-black/30 backdrop-blur-sm"
     >
       {/* Logo */}
       <div className="flex items-center gap-2 group cursor-pointer">
@@ -74,10 +67,10 @@ const Navigation: React.FC = () => {
           alt="BWOLF"
           className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
           onError={(e) => {
-            console.error('Logo failed to load');
-            e.currentTarget.style.display = 'none';
+            console.error("Logo failed to load");
+            e.currentTarget.style.display = "none";
           }}
-          onLoad={() => console.log('Logo loaded successfully')}
+          onLoad={() => console.log("Logo loaded successfully")}
         />
         {/* Fallback text if logo fails */}
         <div className="flex flex-col leading-none">
@@ -89,14 +82,14 @@ const Navigation: React.FC = () => {
       {/* Desktop Links */}
       <div className="hidden md:flex gap-12">
         {links.map((link, i) => (
-          <a 
-            key={i} 
-            href={link.href} 
+          <a
+            key={i}
+            href={link.href}
             className="text-sm font-mono tracking-wider relative group py-2"
             onMouseEnter={handleLinkEnter}
             onMouseLeave={handleLinkLeave}
           >
-            <span className="opacity-50 mr-2 text-xs">0{i+1}.</span>
+            <span className="opacity-50 mr-2 text-xs">0{i + 1}.</span>
             <span className="nav-text inline-block transition-colors">
               {link.name}
             </span>

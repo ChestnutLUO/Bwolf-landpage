@@ -190,7 +190,7 @@ const HeroSection: React.FC = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 hero-sub">
               <a
-                href="https://bwolf.work"
+                href="https://grafana.bwolf.work"
                 className="group relative px-6 py-3 bg-white text-black font-mono font-bold text-xs tracking-wider overflow-hidden flex items-center gap-3 hover:bg-yellow-500 transition-colors"
                 onMouseEnter={handleBtnEnter}
                 onMouseLeave={handleBtnLeave}

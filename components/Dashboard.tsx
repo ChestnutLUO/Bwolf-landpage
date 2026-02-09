@@ -13,12 +13,13 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Activity, Wifi, Users, Server, ExternalLink } from "lucide-react";
-import { MOCK_METRICS, CHART_DATA } from "../constants";
+import { useDashboardData } from "../hooks/useDashboardData";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Dashboard: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { metrics, viewerChart, danmakuChart, isLive } = useDashboardData();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -104,12 +105,12 @@ const Dashboard: React.FC = () => {
           </p>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 bg-yellow-500"></div>
-            <p className="text-white">聊天: {payload[0].value}</p>
+            <p className="text-white">在线: {payload[0].value}</p>
           </div>
           {payload[1] && (
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-white"></div>
-              <p className="text-white">弹幕: {payload[1].value}</p>
+              <p className="text-white">人气: {payload[1].value}</p>
             </div>
           )}
         </div>
@@ -133,9 +134,9 @@ const Dashboard: React.FC = () => {
             <p className="font-mono text-gray-500">狼小妹 // 直播数据分析</p>
           </div>
           <div className="font-mono text-right mt-4 md:mt-0">
-            <div className="text-green-500 flex items-center justify-end gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              系统在线
+            <div className={`${isLive ? "text-green-500" : "text-gray-500"} flex items-center justify-end gap-2`}>
+              <div className={`w-2 h-2 ${isLive ? "bg-green-500 animate-pulse" : "bg-gray-500"} rounded-full`}></div>
+              {isLive ? "直播中" : "未开播"}
             </div>
             <div className="text-xs text-gray-600">数据源: BILIBILI</div>
           </div>
@@ -143,7 +144,7 @@ const Dashboard: React.FC = () => {
 
         {/* Top Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {MOCK_METRICS.map((metric, idx) => (
+          {metrics.map((metric, idx) => (
             <div
               key={metric.id}
               className="data-card bg-[#0F0F0F] border border-gray-800 p-6 relative group overflow-hidden cursor-pointer"
@@ -213,7 +214,7 @@ const Dashboard: React.FC = () => {
 
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={CHART_DATA}>
+                <AreaChart data={viewerChart}>
                   <defs>
                     <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#EAB308" stopOpacity={0.3} />
@@ -263,10 +264,10 @@ const Dashboard: React.FC = () => {
 
           {/* Side Chart */}
           <div className="bg-[#0F0F0F] border border-gray-800 p-6 chart-container flex flex-col relative group hover:border-gray-700 transition-colors">
-            <h3 className="font-bold text-xl mb-6">情感比例</h3>
+            <h3 className="font-bold text-xl mb-6">弹幕活跃度</h3>
             <div className="h-[200px] w-full mb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={CHART_DATA.slice(0, 5)}>
+                <BarChart data={danmakuChart.slice(0, 8)}>
                   <Tooltip
                     content={<CustomTooltip />}
                     cursor={{ fill: "#222" }}
@@ -280,20 +281,24 @@ const Dashboard: React.FC = () => {
             <div className="mt-auto space-y-4">
               <div className="border-t border-gray-800 pt-4">
                 <div className="flex justify-between font-mono text-sm mb-1">
-                  <span className="text-gray-400">正面</span>
-                  <span className="text-yellow-500">64%</span>
+                  <span className="text-gray-400">弹幕总数</span>
+                  <span className="text-yellow-500">
+                    {danmakuChart.reduce((s, d) => s + d.value, 0).toLocaleString()}
+                  </span>
                 </div>
                 <div className="w-full h-1 bg-gray-800 overflow-hidden">
-                  <div className="h-full bg-yellow-500 w-[64%] shadow-[0_0_10px_#EAB308]"></div>
+                  <div className="h-full bg-yellow-500 w-[75%] shadow-[0_0_10px_#EAB308]"></div>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between font-mono text-sm mb-1">
-                  <span className="text-gray-400">负面</span>
-                  <span>36%</span>
+                  <span className="text-gray-400">独立用户</span>
+                  <span>
+                    {danmakuChart.reduce((s, d) => s + (d.value2 ?? 0), 0).toLocaleString()}
+                  </span>
                 </div>
                 <div className="w-full h-1 bg-gray-800">
-                  <div className="h-full bg-white w-[36%]"></div>
+                  <div className="h-full bg-white w-[45%]"></div>
                 </div>
               </div>
             </div>

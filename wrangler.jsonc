@@ -1,0 +1,12 @@
+{
+  "name": "bwolf-landpage",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-02-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "27632ff7a2e741a2988d5fb70760b73f"
+    }
+  ]
+}

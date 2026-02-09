@@ -1,4 +1,4 @@
-import { StreamMetric, ChartDataPoint } from './types';
+import { StreamMetric, ChartDataPoint, DashboardData } from './types';
 
 export const HERO_TEXT = [
   "狼小妹",
@@ -25,3 +25,26 @@ export const CHART_DATA: ChartDataPoint[] = [
   { time: '18:40', value: 11490, value2: 6300 },
   { time: '18:45', value: 10590, value2: 7100 },
 ];
+
+export const MOCK_DASHBOARD_DATA: DashboardData = {
+  room: { uname: '狼小妹', title: '直播中...', cover: '' },
+  is_live: true,
+  session: {
+    id: 0,
+    start_time: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    end_time: null,
+    peak_online: 28450,
+    avg_online: 15200,
+    titles: '聊天互动',
+    areas: '娱乐',
+  },
+  recent_sessions: [],
+  viewer_chart: CHART_DATA,
+  danmaku_chart: CHART_DATA.map((d) => ({
+    time: d.time,
+    value: Math.round(d.value / 10),
+    value2: Math.round((d.value2 ?? 0) / 20),
+  })),
+  followers: 88888,
+  medals: 6666,
+};
