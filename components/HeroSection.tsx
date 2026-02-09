@@ -112,7 +112,7 @@ const HeroSection: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen w-full flex flex-col justify-center px-4 md:px-12 pt-20 overflow-hidden"
+      className="relative min-h-screen w-full flex flex-col justify-center px-4 md:px-12 pt-32 overflow-hidden"
     >
       {/* Background Grid */}
       <div
