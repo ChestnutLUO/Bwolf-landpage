@@ -132,8 +132,7 @@ const HeroSection: React.FC = () => {
           {/* Left: Big Text Block */}
           <div className="flex-shrink-0 z-20">
             <div 
-              className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub transform-gpu antialiased"
-              style={{ backfaceVisibility: 'hidden', WebkitFontSmoothing: 'antialiased' }}
+              className="mb-6 font-mono text-yellow-500 tracking-widest text-xs hero-sub antialiased"
             >
               // BWOLF.WORK 数据分析平台
             </div>
@@ -145,7 +144,6 @@ const HeroSection: React.FC = () => {
                       textRefs.current[index] = el;
                     }}
                     className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[1.1] md:leading-[0.9] text-white hover:text-yellow-500 transition-all duration-500 select-none cursor-default"
-                    style={{ backfaceVisibility: 'hidden', WebkitFontSmoothing: 'antialiased' }}
                   >
                     {line}
                   </h1>

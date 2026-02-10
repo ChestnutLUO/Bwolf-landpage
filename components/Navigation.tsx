@@ -93,7 +93,7 @@ const Navigation: React.FC = () => {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 w-full z-[100] px-6 py-6 flex justify-between items-center text-white bg-black/30 backdrop-blur-sm"
+        className="fixed top-0 left-0 w-full z-[100] px-6 py-6 flex justify-between items-center text-white bg-black/60 backdrop-blur-md"
       >
         {/* Logo */}
         <div className="flex items-center gap-2 group cursor-pointer">
