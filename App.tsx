@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Loader from './components/Loader';
-import Navigation from './components/Navigation';
-import HeroSection from './components/HeroSection';
-import Dashboard from './components/Dashboard';
+import React, { useState } from "react";
+import Loader from "./components/Loader";
+import Navigation from "./components/Navigation";
+import HeroSection from "./components/HeroSection";
+import Dashboard from "./components/Dashboard";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -21,10 +21,11 @@ const App: React.FC = () => {
 
       {!loading && <Navigation />}
 
-      <div className={`transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+      <div
+        className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0"}`}
+      >
         <main>
           <HeroSection />
-          <Dashboard />
         </main>
       </div>
     </div>
