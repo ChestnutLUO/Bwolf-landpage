@@ -171,7 +171,7 @@ const Dashboard: React.FC = () => {
 
               <div className="font-mono text-sm text-gray-400 mb-4">
                 {metric.viewers.toLocaleString()}{" "}
-                <span className="text-[10px]">{metric.id === 'FAN-01' ? '粉丝' : '观众'}</span>
+                <span className="text-[10px]">{metric.id === 'FAN-01' ? '粉丝' : '在线'}</span>
               </div>
 
               {/* Mini visual bar */}

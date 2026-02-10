@@ -62,7 +62,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
             LIMIT 1
           ),
           numbered AS (
-            SELECT recorded_at, online_count, viewer_count,
+            SELECT recorded_at, online_count,
                    NTILE(20) OVER (ORDER BY recorded_at) AS bucket
             FROM viewer_records
             WHERE session_id = (SELECT id FROM latest_session)
