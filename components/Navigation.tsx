@@ -93,14 +93,14 @@ const Navigation: React.FC = () => {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 w-full z-[100] px-6 py-6 flex justify-between items-center text-white bg-black/60 backdrop-blur-md"
+        className="fixed top-0 left-0 w-full z-[100] px-6 py-3 flex justify-between items-center text-white bg-black/60 backdrop-blur-md"
       >
         {/* Logo */}
         <div className="flex items-center gap-2 group cursor-pointer">
           <img
             src="/logo.svg"
             alt="BWOLF"
-            className="h-10 w-auto transition-all duration-300 group-hover:scale-110"
+            className="h-8 w-auto transition-all duration-300 group-hover:scale-110"
             onError={(e) => {
               console.error("Logo failed to load");
               e.currentTarget.style.display = "none";
